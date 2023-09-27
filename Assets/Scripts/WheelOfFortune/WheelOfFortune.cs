@@ -10,9 +10,10 @@ namespace WheelOfFortune
         public int index;
         public Sprite sprite;
         public string labelText;
-        public string labelColor;
+        public string color;
+        public float probability;
     }
-    
+
     public class WheelOfFortune : MonoBehaviour
     {
 
@@ -24,17 +25,12 @@ namespace WheelOfFortune
         [SerializeField] private RectTransform spinningPart;
         [SerializeField] private GameObject rewardItemPrefab;
 
-        void Start()
+        public void Initialize(List<WheelRewardItem> rewardItems)
         {
-            Initialize();
+            CreateRewardItems(rewardItems);
         }
 
-        public void Initialize()
-        {
-            CreateRewardItems();
-        }
-
-        private void CreateRewardItems()
+        private void CreateRewardItems(List<WheelRewardItem> rewardItems)
         {
             for (int i = 0; i < MAX_REWARD_ITEMS; i++)
             {
@@ -47,6 +43,10 @@ namespace WheelOfFortune
 
                 // * Move the reward item to the appropriate position.
                 rewardItem.transform.localPosition += rewardItem.transform.up * (spinningPart.rect.height / 4);
+
+                rewardItem.GetComponent<WheelOfFortuneRewardItem>().rewardItemImage.sprite = rewardItems[i].sprite;
+                rewardItem.GetComponent<WheelOfFortuneRewardItem>().rewardItemLabel.text = rewardItems[i].labelText;
+                rewardItem.GetComponent<WheelOfFortuneRewardItem>().backgroundImage.color = ColorUtility.TryParseHtmlString(rewardItems[i].color, out Color color) ? color : Color.black;
             }
         }
     }

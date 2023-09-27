@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f405d6a978a0f9c4f8ff333ad2cfc3c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backgroundImage: {fileID: 6442953584303627459}
   rewardItemImage: {fileID: 9192289190880486016}
   rewardItemLabel: {fileID: 1665847890840681594}
 --- !u!1 &7922277017242184170

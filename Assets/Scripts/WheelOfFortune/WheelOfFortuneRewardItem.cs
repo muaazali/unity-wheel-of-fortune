@@ -8,6 +8,7 @@ namespace WheelOfFortune
 {
     public class WheelOfFortuneRewardItem : MonoBehaviour
     {
+        public Image backgroundImage;
         public Image rewardItemImage;
         public TextMeshProUGUI rewardItemLabel;
     }
