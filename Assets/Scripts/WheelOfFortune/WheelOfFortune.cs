@@ -5,22 +5,24 @@ using UnityEngine.UI;
 
 namespace WheelOfFortune
 {
+    public struct WheelRewardItem
+    {
+        public int index;
+        public Sprite sprite;
+        public string labelText;
+        public string labelColor;
+    }
+    
     public class WheelOfFortune : MonoBehaviour
     {
-        public struct WheelRewardItem
-        {
-            public string name;
-            public Sprite sprite;
-            public int index;
-        }
 
         // ? We are limited to just 8 because of the way the wheel item is designed.
         // * Consider a different approach for the wheel item to allow for more items.
         // * e.g. render texture that just colors in the part of the wheel instead of using a sprite.
         public const int MAX_REWARD_ITEMS = 8;
 
-        public RectTransform spinningPart;
-        public GameObject rewardItemPrefab;
+        [SerializeField] private RectTransform spinningPart;
+        [SerializeField] private GameObject rewardItemPrefab;
 
         void Start()
         {
