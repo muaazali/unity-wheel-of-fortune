@@ -6,22 +6,6 @@ using System;
 
 namespace WheelOfFortune
 {
-    [Serializable]
-    public class RewardItemData
-    {
-        public float multiplier;
-        public float probability;
-        public string color;
-        public int type;
-    }
-
-    [Serializable]
-    public class RewardsData
-    {
-        public int coins;
-        public List<RewardItemData> rewards;
-    }
-
     public class LoadRewardsFromJSONStrategy : ILoadRewardsStrategy
     {
         private string jsonFileData;

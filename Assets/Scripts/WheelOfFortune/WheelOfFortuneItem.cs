@@ -6,7 +6,7 @@ using TMPro;
 
 namespace WheelOfFortune
 {
-    public class WheelOfFortuneRewardItem : MonoBehaviour
+    public class WheelOfFortuneItem : MonoBehaviour
     {
         public Image backgroundImage;
         public Image rewardItemImage;

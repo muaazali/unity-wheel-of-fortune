@@ -32,21 +32,22 @@ namespace WheelOfFortune
 
         private void CreateRewardItems(List<WheelRewardItem> rewardItems)
         {
-            for (int i = 0; i < MAX_REWARD_ITEMS; i++)
+            for (int i = 0; i < rewardItems.Count; i++)
             {
                 GameObject rewardItem = Instantiate(rewardItemPrefab, spinningPart.transform);
                 rewardItem.transform.localPosition = Vector3.zero;
                 rewardItem.transform.localScale = Vector3.one / 2;
 
                 // * Rotate the reward item to match the wheel.
-                rewardItem.transform.localRotation = Quaternion.Euler(0, 0, (360 / MAX_REWARD_ITEMS) * i);
+                rewardItem.transform.localRotation = Quaternion.Euler(0, 0, (360 / rewardItems.Count) * i);
 
                 // * Move the reward item to the appropriate position.
                 rewardItem.transform.localPosition += rewardItem.transform.up * (spinningPart.rect.height / 4);
 
-                rewardItem.GetComponent<WheelOfFortuneRewardItem>().rewardItemImage.sprite = rewardItems[i].sprite;
-                rewardItem.GetComponent<WheelOfFortuneRewardItem>().rewardItemLabel.text = rewardItems[i].labelText;
-                rewardItem.GetComponent<WheelOfFortuneRewardItem>().backgroundImage.color = ColorUtility.TryParseHtmlString(rewardItems[i].color, out Color color) ? color : Color.black;
+                WheelOfFortuneItem wheelOfFortuneItem = rewardItem.GetComponent<WheelOfFortuneItem>();
+                wheelOfFortuneItem.rewardItemImage.sprite = rewardItems[i].sprite;
+                wheelOfFortuneItem.rewardItemLabel.text = rewardItems[i].labelText;
+                wheelOfFortuneItem.backgroundImage.color = ColorUtility.TryParseHtmlString(rewardItems[i].color, out Color color) ? color : Color.black;
             }
         }
     }

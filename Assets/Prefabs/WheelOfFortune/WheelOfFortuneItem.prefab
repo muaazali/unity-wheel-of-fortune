@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 6442953584303627459}
   - component: {fileID: 8500890518578546709}
   m_Layer: 5
-  m_Name: WheelOfFortuneRewardItem
+  m_Name: WheelOfFortuneItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
