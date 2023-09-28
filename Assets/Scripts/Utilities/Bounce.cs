@@ -29,4 +29,9 @@ public class Bounce : MonoBehaviour
         bounceTweenSequence.Complete();
         bounceTweenSequence.Kill();
     }
+
+    void OnDestroy()
+    {
+        StopBouncing();
+    }
 }
