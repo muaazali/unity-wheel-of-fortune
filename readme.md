@@ -22,7 +22,7 @@ Following Unity packages need to be installed BEFORE in order for this package t
 
 # How to Install
 1. Install the packages mentioned in the Requirements
-2. Download the latest release of the .unitypackage from Releases tab and open it
+2. Download the latest release of the .unitypackage from [Releases](https://github.com/muaazali/unity-wheel-of-fortune/releases) tab and open it
 
 # How to Use
 This package contains the generic "Wheel of Fortune" prefab and an example "coin rewards screen" that implements this wheel of fortune to give players rewards. Both these elements can be used in any project if proper API is followed for them.
