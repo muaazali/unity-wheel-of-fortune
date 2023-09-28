@@ -32,14 +32,13 @@ namespace WheelOfFortune
 
         public void Initialize(ILoadRewardsStrategy loadRewardsStrategy)
         {
-
             multiplierContainer.SetActive(false);
             rewardContainer.SetActive(false);
             spinButton.onClick.AddListener(wheelOfFortune.StartSpin);
 
             rewardsData = loadRewardsStrategy.LoadRewards();
             rewardItems = ConvertRewardDataToWheelRewardItems(rewardsData);
-            shuffledRewardItems = ShuffleRewardItems(rewardItems);
+            shuffledRewardItems = Utility.ShuffleItems(rewardItems);
 
             wheelOfFortune.Initialize(shuffledRewardItems);
 
@@ -68,21 +67,6 @@ namespace WheelOfFortune
             }
 
             return rewardItems;
-        }
-
-        List<WheelRewardItem> ShuffleRewardItems(List<WheelRewardItem> items)
-        {
-            List<WheelRewardItem> shuffledItems = new List<WheelRewardItem>(items);
-
-            for (int i = 0; i < shuffledItems.Count; i++)
-            {
-                WheelRewardItem temp = shuffledItems[i];
-                int randomIndex = Random.Range(i, shuffledItems.Count);
-                shuffledItems[i] = shuffledItems[randomIndex];
-                shuffledItems[randomIndex] = temp;
-            }
-
-            return shuffledItems;
         }
 
         void OnSpinStarted()
