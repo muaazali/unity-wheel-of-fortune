@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +23,8 @@ namespace WheelOfFortune
         [Space]
         [SerializeField] private Sprite coinSprite;
 
+        public System.Action<int> GrantReward;
+
         private RewardsData rewardsData;
         private List<WheelRewardItem> rewardItems;
         private List<WheelRewardItem> shuffledRewardItems;
@@ -33,7 +37,9 @@ namespace WheelOfFortune
         public void Initialize(ILoadRewardsStrategy loadRewardsStrategy)
         {
             multiplierContainer.SetActive(false);
+            multiplierText.text = string.Empty;
             rewardContainer.SetActive(false);
+            rewardText.text = string.Empty;
             spinButton.onClick.AddListener(wheelOfFortune.StartSpin);
 
             rewardsData = loadRewardsStrategy.LoadRewards();
@@ -73,36 +79,53 @@ namespace WheelOfFortune
         {
             DisableSpinButton();
             multiplierContainer.SetActive(false);
+            multiplierText.text = string.Empty;
             rewardContainer.SetActive(false);
+            rewardText.text = string.Empty;
         }
 
         void OnSpinCompleted(int winningIndex)
         {
-            EnableSpinbutton();
             int originalItemIndex = shuffledRewardItems[winningIndex].index;
-            GrantReward(originalItemIndex);
+            ShowRewardDetails(originalItemIndex);
         }
 
         void DisableSpinButton()
         {
             spinButton.interactable = false;
-            spinButton.GetComponentInChildren<TextMeshProUGUI>().text = "Spinning";
         }
 
-        void EnableSpinbutton()
+        void EnableSpinButton()
         {
             spinButton.interactable = true;
-            spinButton.GetComponentInChildren<TextMeshProUGUI>().text = "Spin";
         }
 
-        void GrantReward(int winningIndex)
+        void ShowRewardDetails(int winningIndex)
         {
+            var sequence = DOTween.Sequence();
+
             multiplierContainer.SetActive(true);
-            multiplierText.text = $"x{rewardsData.rewards[winningIndex].multiplier}";
             multiplierText.color = ColorUtility.TryParseHtmlString(rewardsData.rewards[winningIndex].color, out Color color) ? color : Color.white;
 
-            rewardContainer.SetActive(true);
-            rewardText.text = $"{rewardsData.coins * rewardsData.rewards[winningIndex].multiplier}";
+            float counter = 0;
+            sequence.Append(DOTween.To(() => counter, x => counter = x, rewardsData.rewards[winningIndex].multiplier, 1).OnUpdate(() =>
+            {
+                multiplierText.text = $"x{Mathf.RoundToInt(counter)}";
+            }));
+            sequence.AppendCallback(() => counter = 0);
+            sequence.AppendInterval(1);
+
+            sequence.AppendCallback(() => rewardContainer.SetActive(true));
+            sequence.Append(DOTween.To(() => counter, x => counter = x, rewardsData.coins * rewardsData.rewards[winningIndex].multiplier, 1).OnUpdate(() =>
+            {
+                rewardText.text = $"{Mathf.RoundToInt(counter)}";
+            }));
+
+            sequence.AppendCallback(() =>
+            {
+                EnableSpinButton();
+                GrantReward?.Invoke(winningIndex);
+            });
         }
     }
 }
