@@ -38,7 +38,7 @@ namespace WheelOfFortune
         void Start()
         {
             uiContentsContainer.SetActive(false);
-            Initialize(new LoadRewardsFromJSONStrategy($"{Application.dataPath}/Data/data.json"));
+            Initialize(new LoadRewardsFromJSONStrategy(Resources.Load<TextAsset>("Data/data").text));
             uiContentsContainer.SetActive(true);
             uiContentsContainer.transform.localScale = Vector2.zero;
             uiContentsContainer.transform.DOScale(1f, 0.2f).SetEase(Ease.OutBack);

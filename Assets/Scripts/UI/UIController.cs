@@ -37,7 +37,7 @@ public class UIController : MonoBehaviour
 
     void Start()
     {
-        rewardsData = new LoadRewardsFromJSONStrategy($"{Application.dataPath}/Data/data.json").LoadRewards();
+        rewardsData = new LoadRewardsFromJSONStrategy(Resources.Load<TextAsset>("Data/data").text).LoadRewards();
     }
 
     public void ShowCoinRewardsScreen()
