@@ -10,7 +10,7 @@ namespace WheelOfFortune
 {
     public class CoinRewardsScreen : MonoBehaviour
     {
-        #region UI References
+        #region Editor References
         [Header("UI References")]
         [SerializeField] private GameObject uiContentsContainer;
 
@@ -35,17 +35,10 @@ namespace WheelOfFortune
         private List<WheelRewardItem> rewardItems;
         private List<WheelRewardItem> shuffledRewardItems;
 
-        void Start()
+        public void Initialize(RewardsData _rewardsData)
         {
             uiContentsContainer.SetActive(false);
-            Initialize(new LoadRewardsFromJSONStrategy(Resources.Load<TextAsset>("Data/data").text));
-            uiContentsContainer.SetActive(true);
-            uiContentsContainer.transform.localScale = Vector2.zero;
-            uiContentsContainer.transform.DOScale(1f, 0.2f).SetEase(Ease.OutBack);
-        }
 
-        public void Initialize(ILoadRewardsStrategy loadRewardsStrategy)
-        {
             multiplierContainer.SetActive(false);
             multiplierText.text = string.Empty;
             rewardContainer.SetActive(false);
@@ -53,39 +46,18 @@ namespace WheelOfFortune
             spinButton.onClick.AddListener(wheelOfFortune.StartSpin);
             closeButton.onClick.AddListener(CloseScreen);
 
-            rewardsData = loadRewardsStrategy.LoadRewards();
-            rewardItems = ConvertRewardDataToWheelRewardItems(rewardsData);
+            rewardsData = _rewardsData;
+            rewardItems = Utility.ConvertRewardDataToWheelRewardItems(rewardsData);
             shuffledRewardItems = Utility.ShuffleItems(rewardItems);
 
             wheelOfFortune.Initialize(shuffledRewardItems);
 
             wheelOfFortune.OnSpinStarted += OnSpinStarted;
             wheelOfFortune.OnSpinCompleted += OnSpinCompleted;
-        }
 
-        // * Serves as an adapter between the two data structures.
-        List<WheelRewardItem> ConvertRewardDataToWheelRewardItems(RewardsData rewards)
-        {
-            List<WheelRewardItem> rewardItems = new List<WheelRewardItem>();
-
-            for (int i = 0; i < rewards.rewards.Count; i++)
-            {
-                WheelRewardItem rewardItem = new WheelRewardItem
-                {
-                    index = i,
-                    labelText = $"x{rewards.rewards[i].multiplier}",
-                    color = rewards.rewards[i].color,
-                    probability = rewards.rewards[i].probability
-                };
-
-                if (rewards.rewards[i].type == 0) // ? Assuming that type 0 is coins.
-                {
-                    rewardItem.sprite = coinSprite;
-                }
-                rewardItems.Add(rewardItem);
-            }
-
-            return rewardItems;
+            uiContentsContainer.SetActive(true);
+            uiContentsContainer.transform.localScale = Vector2.zero;
+            uiContentsContainer.transform.DOScale(1f, 0.2f).SetEase(Ease.OutBack);
         }
 
         void OnSpinStarted()

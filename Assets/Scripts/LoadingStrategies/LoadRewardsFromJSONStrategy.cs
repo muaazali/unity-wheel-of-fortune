@@ -13,7 +13,6 @@ namespace WheelOfFortune
 
         public LoadRewardsFromJSONStrategy(string jsonFileData)
         {
-            Debug.Log(jsonFileData);
             rewardsData = JsonConvert.DeserializeObject<RewardsData>(jsonFileData);
         }
 

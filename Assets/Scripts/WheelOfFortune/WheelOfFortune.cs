@@ -69,7 +69,8 @@ namespace WheelOfFortune
                 rewardItem.transform.localPosition += rewardItem.transform.up * (spinningPart.rect.height / 4);
 
                 WheelOfFortuneItem wheelOfFortuneItem = rewardItem.GetComponent<WheelOfFortuneItem>();
-                wheelOfFortuneItem.rewardItemImage.sprite = rewardItems[i].sprite;
+                if (rewardItems[i].sprite != null)
+                    wheelOfFortuneItem.rewardItemImage.sprite = rewardItems[i].sprite;
                 wheelOfFortuneItem.rewardItemLabel.text = rewardItems[i].labelText;
                 wheelOfFortuneItem.backgroundImage.color = ColorUtility.TryParseHtmlString(rewardItems[i].color, out Color color) ? color : Color.black;
             }

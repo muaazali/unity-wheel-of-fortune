@@ -44,6 +44,7 @@ public class UIController : MonoBehaviour
     {
         if (coinRewardsScreen != null) return;
         coinRewardsScreen = Instantiate(coinRewardsScreenPrefab, mainCanvas.transform);
+        coinRewardsScreen.GetComponent<CoinRewardsScreen>().Initialize(rewardsData);
         coinRewardsScreen.GetComponent<CoinRewardsScreen>().GrantReward += (reward) =>
         {
             ShowRewardObtainedScreen(coinSprite, $"{rewardsData.coins * rewardsData.rewards[reward].multiplier}");
