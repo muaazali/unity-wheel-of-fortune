@@ -24,6 +24,7 @@ namespace WheelOfFortune
         [Header("Wheel Settings")]
         [SerializeField] private float spinDuration = 3f;
         [SerializeField] private int emptySpinsBeforeReachingDestination = 3;
+        [SerializeField] private AnimationCurve easeCurve;
 
         [Header("UI References")]
         [SerializeField] private RectTransform spinningPart;
@@ -101,8 +102,8 @@ namespace WheelOfFortune
             while (t < spinDuration)
             {
                 t += Time.deltaTime;
-                var quarticEaseOutStep = 1 - Mathf.Pow(1 - (t / spinDuration), 4);
-                float rotation = Mathf.Lerp(startRotation, endRotation, quarticEaseOutStep);
+                var step = easeCurve.Evaluate(t / spinDuration);
+                float rotation = Mathf.Lerp(startRotation, endRotation, step);
                 spinningPart.rotation = Quaternion.Euler(0, 0, rotation);
                 yield return null;
             }

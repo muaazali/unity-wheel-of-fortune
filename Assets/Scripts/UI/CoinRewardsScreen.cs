@@ -8,11 +8,16 @@ using UnityEngine.UI;
 
 namespace WheelOfFortune
 {
-    public class WheelRewardScreen : MonoBehaviour
+    public class CoinRewardsScreen : MonoBehaviour
     {
+        #region UI References
         [Header("UI References")]
+        [SerializeField] private GameObject uiContentsContainer;
+
+        [Space]
         [SerializeField] private WheelOfFortune wheelOfFortune;
         [SerializeField] private Button spinButton;
+        [SerializeField] private Button closeButton;
 
         [Space]
         [SerializeField] private GameObject multiplierContainer;
@@ -22,6 +27,7 @@ namespace WheelOfFortune
 
         [Space]
         [SerializeField] private Sprite coinSprite;
+        #endregion
 
         public System.Action<int> GrantReward;
 
@@ -31,7 +37,11 @@ namespace WheelOfFortune
 
         void Start()
         {
+            uiContentsContainer.SetActive(false);
             Initialize(new LoadRewardsFromJSONStrategy($"{Application.dataPath}/Data/data.json"));
+            uiContentsContainer.SetActive(true);
+            uiContentsContainer.transform.localScale = Vector2.zero;
+            uiContentsContainer.transform.DOScale(1f, 0.2f).SetEase(Ease.OutBack);
         }
 
         public void Initialize(ILoadRewardsStrategy loadRewardsStrategy)
@@ -41,6 +51,7 @@ namespace WheelOfFortune
             rewardContainer.SetActive(false);
             rewardText.text = string.Empty;
             spinButton.onClick.AddListener(wheelOfFortune.StartSpin);
+            closeButton.onClick.AddListener(CloseScreen);
 
             rewardsData = loadRewardsStrategy.LoadRewards();
             rewardItems = ConvertRewardDataToWheelRewardItems(rewardsData);
@@ -59,11 +70,13 @@ namespace WheelOfFortune
 
             for (int i = 0; i < rewards.rewards.Count; i++)
             {
-                WheelRewardItem rewardItem = new WheelRewardItem();
-                rewardItem.index = i;
-                rewardItem.labelText = $"x{rewards.rewards[i].multiplier}";
-                rewardItem.color = rewards.rewards[i].color;
-                rewardItem.probability = rewards.rewards[i].probability;
+                WheelRewardItem rewardItem = new WheelRewardItem
+                {
+                    index = i,
+                    labelText = $"x{rewards.rewards[i].multiplier}",
+                    color = rewards.rewards[i].color,
+                    probability = rewards.rewards[i].probability
+                };
 
                 if (rewards.rewards[i].type == 0) // ? Assuming that type 0 is coins.
                 {
@@ -77,7 +90,7 @@ namespace WheelOfFortune
 
         void OnSpinStarted()
         {
-            DisableSpinButton();
+            DisableInteraction();
             multiplierContainer.SetActive(false);
             multiplierText.text = string.Empty;
             rewardContainer.SetActive(false);
@@ -90,14 +103,18 @@ namespace WheelOfFortune
             ShowRewardDetails(originalItemIndex);
         }
 
-        void DisableSpinButton()
+        void DisableInteraction()
         {
             spinButton.interactable = false;
+            if (spinButton.TryGetComponent<Bounce>(out Bounce bounce)) bounce.StopBouncing();
+            closeButton.interactable = false;
         }
 
-        void EnableSpinButton()
+        void EnableInteraction()
         {
             spinButton.interactable = true;
+            if (spinButton.TryGetComponent<Bounce>(out Bounce bounce)) bounce.StartBouncing();
+            closeButton.interactable = true;
         }
 
         void ShowRewardDetails(int winningIndex)
@@ -121,11 +138,17 @@ namespace WheelOfFortune
                 rewardText.text = $"{Mathf.RoundToInt(counter)}";
             }));
 
+            sequence.AppendInterval(1);
             sequence.AppendCallback(() =>
             {
-                EnableSpinButton();
+                EnableInteraction();
                 GrantReward?.Invoke(winningIndex);
             });
+        }
+
+        void CloseScreen()
+        {
+            Destroy(this.gameObject);
         }
     }
 }
