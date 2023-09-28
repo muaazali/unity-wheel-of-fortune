@@ -32,11 +32,19 @@ namespace WheelOfFortune
 
         public void Initialize(ILoadRewardsStrategy loadRewardsStrategy)
         {
+
+            multiplierContainer.SetActive(false);
+            rewardContainer.SetActive(false);
+            spinButton.onClick.AddListener(wheelOfFortune.StartSpin);
+
             rewardsData = loadRewardsStrategy.LoadRewards();
             rewardItems = ConvertRewardDataToWheelRewardItems(rewardsData);
             shuffledRewardItems = ShuffleRewardItems(rewardItems);
 
             wheelOfFortune.Initialize(shuffledRewardItems);
+
+            wheelOfFortune.OnSpinStarted += OnSpinStarted;
+            wheelOfFortune.OnSpinCompleted += OnSpinCompleted;
         }
 
         // * Serves as an adapter between the two data structures.
@@ -52,7 +60,7 @@ namespace WheelOfFortune
                 rewardItem.color = rewards.rewards[i].color;
                 rewardItem.probability = rewards.rewards[i].probability;
 
-                if (rewards.rewards[i].type == null || rewards.rewards[i].type == 0) // ? Assuming that type 0/unspecified is coins.
+                if (rewards.rewards[i].type == 0) // ? Assuming that type 0 is coins.
                 {
                     rewardItem.sprite = coinSprite;
                 }
@@ -75,6 +83,42 @@ namespace WheelOfFortune
             }
 
             return shuffledItems;
+        }
+
+        void OnSpinStarted()
+        {
+            DisableSpinButton();
+            multiplierContainer.SetActive(false);
+            rewardContainer.SetActive(false);
+        }
+
+        void OnSpinCompleted(int winningIndex)
+        {
+            EnableSpinbutton();
+            int originalItemIndex = shuffledRewardItems[winningIndex].index;
+            GrantReward(originalItemIndex);
+        }
+
+        void DisableSpinButton()
+        {
+            spinButton.interactable = false;
+            spinButton.GetComponentInChildren<TextMeshProUGUI>().text = "Spinning";
+        }
+
+        void EnableSpinbutton()
+        {
+            spinButton.interactable = true;
+            spinButton.GetComponentInChildren<TextMeshProUGUI>().text = "Spin";
+        }
+
+        void GrantReward(int winningIndex)
+        {
+            multiplierContainer.SetActive(true);
+            multiplierText.text = $"x{rewardsData.rewards[winningIndex].multiplier}";
+            multiplierText.color = ColorUtility.TryParseHtmlString(rewardsData.rewards[winningIndex].color, out Color color) ? color : Color.white;
+
+            rewardContainer.SetActive(true);
+            rewardText.text = $"{rewardsData.coins * rewardsData.rewards[winningIndex].multiplier}";
         }
     }
 }
